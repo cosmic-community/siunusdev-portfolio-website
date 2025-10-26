@@ -1,0 +1,36 @@
+---
+// src/components/ServiceCard.astro
+import type { Service } from '../../types'
+
+export interface Props {
+  service: Service
+}
+
+const { service } = Astro.props
+
+const serviceName = service.metadata?.service_name || service.title
+const description = service.metadata?.description || ''
+const iconUrl = service.metadata?.icon?.imgix_url
+---
+
+<div class="card p-6 h-full flex flex-col">
+  {iconUrl && (
+    <div class="mb-4">
+      <img 
+        src={`${iconUrl}?w=160&h=160&fit=crop&auto=format,compress`}
+        alt={serviceName}
+        width="80"
+        height="80"
+        class="rounded-lg"
+      />
+    </div>
+  )}
+  
+  <h3 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white">
+    {serviceName}
+  </h3>
+  
+  <p class="text-gray-600 dark:text-gray-300 flex-grow">
+    {description}
+  </p>
+</div>

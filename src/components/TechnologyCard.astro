@@ -1,0 +1,36 @@
+---
+// src/components/TechnologyCard.astro
+import type { Technology } from '../../types'
+
+export interface Props {
+  technology: Technology
+}
+
+const { technology } = Astro.props
+
+const technologyName = technology.metadata?.technology_name || technology.title
+const description = technology.metadata?.description || ''
+const logoUrl = technology.metadata?.logo?.imgix_url
+---
+
+<div class="card p-6 h-full flex flex-col">
+  {logoUrl && (
+    <div class="mb-4">
+      <img 
+        src={`${logoUrl}?w=160&h=160&fit=crop&auto=format,compress`}
+        alt={technologyName}
+        width="80"
+        height="80"
+        class="rounded-lg"
+      />
+    </div>
+  )}
+  
+  <h3 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white">
+    {technologyName}
+  </h3>
+  
+  <p class="text-gray-600 dark:text-gray-300 flex-grow">
+    {description}
+  </p>
+</div>

@@ -1,0 +1,94 @@
+---
+// src/components/ProductsSection.astro
+import { getProducts } from '../lib/cosmic'
+import ProductCard from './ProductCard.astro'
+
+// Get all products first to determine available categories
+const allProducts = await getProducts()
+
+// Extract unique categories
+const categories = [...new Set(
+  allProducts
+    .map(p => p.metadata?.category?.key)
+    .filter(Boolean)
+)]
+---
+
+<section id="products" class="py-20">
+  <div class="container">
+    <h2 class="section-title">Produk Kami</h2>
+    
+    <!-- Category Filter -->
+    {categories.length > 0 && (
+      <div class="flex flex-wrap justify-center gap-4 mb-12">
+        <button 
+          class="category-filter-btn btn btn-primary" 
+          data-category="all"
+        >
+          Semua
+        </button>
+        {categories.map(category => (
+          <button 
+            class="category-filter-btn btn btn-secondary" 
+            data-category={category}
+          >
+            {category === 'education' && 'Pendidikan'}
+            {category === 'business' && 'Bisnis'}
+            {category === 'technology' && 'Teknologi'}
+          </button>
+        ))}
+      </div>
+    )}
+    
+    <!-- Products Grid -->
+    <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {allProducts && allProducts.length > 0 ? (
+        allProducts.map((product, index) => (
+          <div 
+            class="product-item animate-slide-up"
+            data-category={product.metadata?.category?.key || ''}
+            style={`animation-delay: ${index * 100}ms`}
+          >
+            <ProductCard product={product} />
+          </div>
+        ))
+      ) : (
+        <div class="col-span-full text-center py-12">
+          <p class="text-gray-600 dark:text-gray-400">Belum ada produk yang tersedia.</p>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Category filter functionality
+  const filterButtons = document.querySelectorAll('.category-filter-btn')
+  const productItems = document.querySelectorAll('.product-item')
+  
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const category = button.getAttribute('data-category')
+      
+      // Update active button
+      filterButtons.forEach(btn => {
+        btn.classList.remove('btn-primary')
+        btn.classList.add('btn-secondary')
+      })
+      button.classList.remove('btn-secondary')
+      button.classList.add('btn-primary')
+      
+      // Filter products
+      productItems.forEach(item => {
+        const itemCategory = item.getAttribute('data-category')
+        
+        if (category === 'all' || itemCategory === category) {
+          item.style.display = 'block'
+          item.classList.add('animate-slide-up')
+        } else {
+          item.style.display = 'none'
+        }
+      })
+    })
+  })
+</script>

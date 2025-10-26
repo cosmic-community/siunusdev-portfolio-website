@@ -1,0 +1,26 @@
+---
+// src/pages/index.astro
+import Layout from '../layouts/Layout.astro'
+import HeroSection from '../components/HeroSection.astro'
+import ServicesSection from '../components/ServicesSection.astro'
+import ProductsSection from '../components/ProductsSection.astro'
+import TechnologiesSection from '../components/TechnologiesSection.astro'
+import ContactSection from '../components/ContactSection.astro'
+import { getCompanyInfo } from '../lib/cosmic'
+
+const companyInfo = await getCompanyInfo()
+const companyName = companyInfo?.metadata?.company_name || 'SIUNUSDEV'
+const tagline = companyInfo?.metadata?.tagline || 'Solusi Berbasis Teknologi'
+const description = companyInfo?.metadata?.description || 'SIUNUSDEV menyediakan layanan Web Development, Mobile Apps Development, dan Cloud Services untuk solusi bisnis Anda.'
+---
+
+<Layout 
+  title={`${companyName} - ${tagline}`}
+  description={description}
+>
+  <HeroSection />
+  <ServicesSection />
+  <ProductsSection />
+  <TechnologiesSection />
+  <ContactSection />
+</Layout>
